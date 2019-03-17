@@ -31,6 +31,8 @@ namespace TableTopCalculator.SecretHitler
         Color COLOR_HITLER = Color.FromArgb(255, 0, 0, 0);
         Color COLOR_BLUE = Color.FromArgb(255, 0, 128, 255);
 
+        int HoveredPlayer = -1;
+
         public SecretHitlerSimulator()
         {
             InitializeComponent();
@@ -86,6 +88,13 @@ namespace TableTopCalculator.SecretHitler
                 {
                     var chanceOfRed = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Red);
                     var chanceOfHitler = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Hitler);
+
+                    if (MouseButtons == MouseButtons.Right && HoveredPlayer > -1 && CurrentPlayers[HoveredPlayer] != null)
+                    {
+                        chanceOfRed = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Red, CurrentPlayers[HoveredPlayer]);
+                        chanceOfHitler = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Hitler, CurrentPlayers[HoveredPlayer]);
+                    }
+
                     var colorRed = GetPlayerColor(chanceOfRed, COLOR_BLUE, COLOR_RED);
                     var colorHitler = GetPlayerColor(chanceOfHitler, colorRed, COLOR_HITLER);
                     gfx.FillRectangle(new SolidBrush(colorRed), square);
@@ -151,49 +160,52 @@ namespace TableTopCalculator.SecretHitler
 
         private void SecretHitlerSimulator_MouseClick(object sender, MouseEventArgs e)
         {
-            var clickedPlayer = -1;
-            for (var i = 0; i < 10; i++)
+            if (e.Button == MouseButtons.Left)
             {
-                var square = GetPlayerSquare(i);
-                if (square.Contains(e.X, e.Y))
+                var clickedPlayer = -1;
+                for (var i = 0; i < 10; i++)
                 {
-                    clickedPlayer = i;
-                    break;
-                }
-            }
-
-            if (clickedPlayer > -1)
-            {
-                if (currentGame == null)
-                {
-                    if (CurrentPlayers[clickedPlayer] == null)
+                    var square = GetPlayerSquare(i);
+                    if (square.Contains(e.X, e.Y))
                     {
-                        // Show New Player Form
+                        clickedPlayer = i;
+                        break;
+                    }
+                }
 
-                        var name = Interaction.InputBox("What is the name of this player?", "Name Player", "");
+                if (clickedPlayer > -1)
+                {
+                    if (currentGame == null)
+                    {
+                        if (CurrentPlayers[clickedPlayer] == null)
+                        {
+                            // Show New Player Form
 
-                        CurrentPlayers[clickedPlayer] = new Player(clickedPlayer, name);
+                            var name = Interaction.InputBox("What is the name of this player?", "Name Player", "");
+
+                            CurrentPlayers[clickedPlayer] = new Player(clickedPlayer, name);
+                        }
+                        else
+                        {
+                            CurrentPlayers[clickedPlayer] = null;
+                        }
+                        btnStartStop.Enabled = CurrentPlayers.Count(x => x != null) > 4;
                     }
                     else
                     {
-                        CurrentPlayers[clickedPlayer] = null;
-                    }
-                    btnStartStop.Enabled = CurrentPlayers.Count(x => x != null) > 4;
-                }
-                else
-                {
-                    if (CurrentPlayers[clickedPlayer] != null)
-                    {
-                        if (selectedPlayers.Contains(clickedPlayer))
+                        if (CurrentPlayers[clickedPlayer] != null)
                         {
-                            selectedPlayers.Remove(clickedPlayer);
+                            if (selectedPlayers.Contains(clickedPlayer))
+                            {
+                                selectedPlayers.Remove(clickedPlayer);
+                            }
+                            else if (selectedPlayers.Count < 2)
+                            {
+                                selectedPlayers.Add(clickedPlayer);
+                            }
                         }
-                        else if (selectedPlayers.Count < 2)
-                        {
-                            selectedPlayers.Add(clickedPlayer);
-                        }
+                        btnStartStop.Enabled = true;
                     }
-                    btnStartStop.Enabled = true;
                 }
             }
             Refresh();
@@ -292,6 +304,32 @@ namespace TableTopCalculator.SecretHitler
             var b = (int)((colorIfYes.B * chanceRed) + (colorIfNot.B * chanceBlue));
 
             return Color.FromArgb(a, r, g, b);
+        }
+
+        private void SecretHitlerSimulator_MouseMove(object sender, MouseEventArgs e)
+        {
+            HoveredPlayer = -1;
+            for (var i = 0; i < 10; i++)
+            {
+                var square = GetPlayerSquare(i);
+                if (square.Contains(e.X, e.Y))
+                {
+                    HoveredPlayer = i;
+                    break;
+                }
+            }
+            this.Refresh();
+        }
+
+        private void SecretHitlerSimulator_MouseDown(object sender, MouseEventArgs e)
+        {
+            this.Refresh();
+        }
+
+        private void SecretHitlerSimulator_MouseUp(object sender, MouseEventArgs e)
+        {
+
+            this.Refresh();
         }
     }
 }

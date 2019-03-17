@@ -82,5 +82,10 @@ namespace TableTopCalculator.Resistance
 
             return dicChances;
         }
+
+        internal override Information GetTemporaryInformation(Player player)
+        {
+            return new SelfIsBlueInfo(player);
+        }
     }
 }

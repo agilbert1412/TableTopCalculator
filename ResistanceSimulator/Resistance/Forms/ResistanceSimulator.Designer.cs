@@ -83,6 +83,7 @@
             this.Controls.Add(this.btnRoleReveal);
             this.Controls.Add(this.btnPlayMission);
             this.Controls.Add(this.btnStartStop);
+            this.DoubleBuffered = true;
             this.MaximumSize = new System.Drawing.Size(800, 450);
             this.MinimumSize = new System.Drawing.Size(800, 450);
             this.Name = "ResistanceSimulator";
@@ -90,6 +91,9 @@
             this.Load += new System.EventHandler(this.ResistanceSimulator_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ResistanceSimulator_Paint);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ResistanceSimulator_MouseClick);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ResistanceSimulator_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ResistanceSimulator_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ResistanceSimulator_MouseUp);
             this.ResumeLayout(false);
 
         }

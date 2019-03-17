@@ -83,6 +83,7 @@
             this.Controls.Add(this.btnAllegianceReveal);
             this.Controls.Add(this.btnElectionPassed);
             this.Controls.Add(this.btnStartStop);
+            this.DoubleBuffered = true;
             this.MaximumSize = new System.Drawing.Size(800, 450);
             this.MinimumSize = new System.Drawing.Size(800, 450);
             this.Name = "SecretHitlerSimulator";
@@ -90,6 +91,9 @@
             this.Load += new System.EventHandler(this.SecretHitlerSimulator_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SecretHitlerSimulator_Paint);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SecretHitlerSimulator_MouseClick);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SecretHitlerSimulator_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SecretHitlerSimulator_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SecretHitlerSimulator_MouseUp);
             this.ResumeLayout(false);
 
         }

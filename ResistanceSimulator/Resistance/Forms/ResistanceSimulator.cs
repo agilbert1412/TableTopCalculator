@@ -26,6 +26,8 @@ namespace TableTopCalculator.Resistance
         Color COLOR_RED = Color.FromArgb(255, 255, 0, 0);
         Color COLOR_BLUE = Color.FromArgb(255, 0, 128, 255);
 
+        int HoveredPlayer = -1;
+
         public ResistanceSimulator()
         {
             InitializeComponent();
@@ -78,6 +80,12 @@ namespace TableTopCalculator.Resistance
                 if (currentGame != null)
                 {
                     var chanceOfRed = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)ResistanceRole.Red);
+
+                    if (MouseButtons == MouseButtons.Right && HoveredPlayer > -1 && CurrentPlayers[HoveredPlayer] != null)
+                    {
+                        chanceOfRed = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)ResistanceRole.Red, CurrentPlayers[HoveredPlayer]);
+                    }
+
                     var color = GetPlayerColor(chanceOfRed);
                     gfx.FillRectangle(new SolidBrush(color), square);
                     gfx.DrawString(Math.Round(chanceOfRed * 100) + "%", font, Brushes.Black, locationPercent);
@@ -133,36 +141,39 @@ namespace TableTopCalculator.Resistance
 
             if (clickedPlayer > -1)
             {
-                if (currentGame == null)
+                if (e.Button == MouseButtons.Left)
                 {
-                    if (CurrentPlayers[clickedPlayer] == null)
+                    if (currentGame == null)
                     {
-                        // Show New Player Form
-
-                        var name = Interaction.InputBox("What is the name of this player?", "Name Player", "");
-
-                        CurrentPlayers[clickedPlayer] = new Player(clickedPlayer, name);
-                    }
-                    else
-                    {
-                        CurrentPlayers[clickedPlayer] = null;
-                    }
-                    btnStartStop.Enabled = CurrentPlayers.Count(x => x != null) > 4;
-                }
-                else
-                {
-                    if (CurrentPlayers[clickedPlayer] != null)
-                    {
-                        if (selectedPlayers.Contains(clickedPlayer))
+                        if (CurrentPlayers[clickedPlayer] == null)
                         {
-                            selectedPlayers.Remove(clickedPlayer);
+                            // Show New Player Form
+
+                            var name = Interaction.InputBox("What is the name of this player?", "Name Player", "");
+
+                            CurrentPlayers[clickedPlayer] = new Player(clickedPlayer, name);
                         }
                         else
                         {
-                            selectedPlayers.Add(clickedPlayer);
+                            CurrentPlayers[clickedPlayer] = null;
                         }
+                        btnStartStop.Enabled = CurrentPlayers.Count(x => x != null) > 4;
                     }
-                    btnStartStop.Enabled = true;
+                    else
+                    {
+                        if (CurrentPlayers[clickedPlayer] != null)
+                        {
+                            if (selectedPlayers.Contains(clickedPlayer))
+                            {
+                                selectedPlayers.Remove(clickedPlayer);
+                            }
+                            else
+                            {
+                                selectedPlayers.Add(clickedPlayer);
+                            }
+                        }
+                        btnStartStop.Enabled = true;
+                    }
                 }
             }
             Refresh();
@@ -279,6 +290,31 @@ namespace TableTopCalculator.Resistance
             var b = (int)((COLOR_RED.B * chanceRed) + (COLOR_BLUE.B * chanceBlue));
 
             return Color.FromArgb(a, r, g, b);
+        }
+
+        private void ResistanceSimulator_MouseMove(object sender, MouseEventArgs e)
+        {
+            HoveredPlayer = -1;
+            for (var i = 0; i < 10; i++)
+            {
+                var square = GetPlayerSquare(i);
+                if (square.Contains(e.X, e.Y))
+                {
+                    HoveredPlayer = i;
+                    break;
+                }
+            }
+            this.Refresh();
+        }
+
+        private void ResistanceSimulator_MouseUp(object sender, MouseEventArgs e)
+        {
+            this.Refresh();
+        }
+
+        private void ResistanceSimulator_MouseDown(object sender, MouseEventArgs e)
+        {
+            this.Refresh();
         }
     }
 }

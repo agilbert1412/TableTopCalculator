@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 
-namespace TableTopCalculator.SecretHitler
+namespace TableTopCalculator.SecretHitler.Info
 {
     public class NotHitlerInfo : Information
     {
@@ -18,12 +15,7 @@ namespace TableTopCalculator.SecretHitler
         {
             var hitlerScenario = (SecretHitlerScenario)scenario;
 
-            if (hitlerScenario.Roles[PlayerWhoIsNotHitler] == SecretHitlerRole.Hitler)
-            {
-                return false;
-            }
-
-            return true;
+            return hitlerScenario.Roles[PlayerWhoIsNotHitler] != SecretHitlerRole.Hitler;
         }
 
         public override void DrawInfo(Graphics gfx)

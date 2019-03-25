@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TableTopCalculator.Resistance;
 using TableTopCalculator.SecretHitler;
 
@@ -22,13 +20,13 @@ namespace TableTopCalculator
 
         public Calculator Calc { get; set; }
 
-        public List<Scenario> remainingScenarios { get; set; }
+        public List<Scenario> RemainingScenarios { get; set; }
 
         public Dictionary<int, Dictionary<Player, double>> ChancesOfRole { get; set; }
 
         public Dictionary<Tuple<int, int>, Dictionary<Player, double>> ChancesOfRoleWithTemps { get; set; }
 
-        public readonly Dictionary<int, int> nbRedsPerNbPlayersResistance = new Dictionary<int, int>()
+        public readonly Dictionary<int, int> NbRedsPerNbPlayersResistance = new Dictionary<int, int>
         {
             { 5, 2 },
             { 6, 2 },
@@ -38,7 +36,7 @@ namespace TableTopCalculator
             { 10, 4 }
         };
 
-        public readonly Dictionary<int, int> nbRedsPerNbPlayersSecretHitler = new Dictionary<int, int>()
+        public readonly Dictionary<int, int> NbRedsPerNbPlayersSecretHitler = new Dictionary<int, int>
         {
             { 5, 2 },
             { 6, 2 },
@@ -50,23 +48,27 @@ namespace TableTopCalculator
 
         public Game(List<Player> allPlayers, GameType type)
         {
-            if (type == GameType.Resistance)
+            switch (type)
             {
-                Calc = new ResistanceCalculator();
-            }
-            else if (type == GameType.SecretHitler)
-            {
-                Calc = new SecretHitlerCalculator();
+                case GameType.Resistance:
+                    Calc = new ResistanceCalculator();
+                    break;
+                case GameType.SecretHitler:
+                    Calc = new SecretHitlerCalculator();
+                    break;
+                default:
+                    Calc = new ResistanceCalculator();
+                    break;
             }
             AllInformation = new List<Information>();
             Players = allPlayers;
-            remainingScenarios = new List<Scenario>();
+            RemainingScenarios = new List<Scenario>();
         }
 
         public void StartGame()
         {
             Players = Players.Where(x => x != null).ToList();
-            remainingScenarios = Calc.GenerateAllScenarios(Players, Calc is ResistanceCalculator ? nbRedsPerNbPlayersResistance[Players.Count] : nbRedsPerNbPlayersSecretHitler[Players.Count]);
+            RemainingScenarios = Calc.GenerateAllScenarios(Players, Calc is ResistanceCalculator ? NbRedsPerNbPlayersResistance[Players.Count] : NbRedsPerNbPlayersSecretHitler[Players.Count]);
             ChancesOfRole = new Dictionary<int, Dictionary<Player, double>>();
             ChancesOfRoleWithTemps = new Dictionary<Tuple<int, int>, Dictionary<Player, double>>();
         }
@@ -75,10 +77,10 @@ namespace TableTopCalculator
         {
             if (!ChancesOfRole.ContainsKey(role))
             {
-                ChancesOfRole.Add(role, Calc.GetChancesOfRole(role, remainingScenarios));
+                ChancesOfRole.Add(role, Calc.GetChancesOfRole(role, RemainingScenarios));
             }
 
-            if (remainingScenarios.Count() > 0)
+            if (RemainingScenarios.Count > 0)
             {
                 return ChancesOfRole[role][player];
             }
@@ -91,7 +93,7 @@ namespace TableTopCalculator
 
             if (!ChancesOfRoleWithTemps.ContainsKey(key))
             {
-                var scenariosWithTemp = remainingScenarios.ToList();
+                var scenariosWithTemp = RemainingScenarios.ToList();
 
                 var temporaryInfo = Calc.GetTemporaryInformation(temporaryInfoPlayer);
 
@@ -109,7 +111,7 @@ namespace TableTopCalculator
                 }
             }
 
-            if (remainingScenarios.Count() > 0 && ChancesOfRoleWithTemps.ContainsKey(key) && ChancesOfRoleWithTemps[key].ContainsKey(player))
+            if (RemainingScenarios.Count > 0 && ChancesOfRoleWithTemps.ContainsKey(key) && ChancesOfRoleWithTemps[key].ContainsKey(player))
             {
                 return ChancesOfRoleWithTemps[key][player];
             }
@@ -121,11 +123,11 @@ namespace TableTopCalculator
             AllInformation.Add(info);
             //remainingScenarios = Calc.GenerateAllScenarios(Players, nbRedsPerNbPlayers[Players.Count]);
 
-            for (var i = remainingScenarios.Count - 1; i >= 0; i--)
+            for (var i = RemainingScenarios.Count - 1; i >= 0; i--)
             {
-                if (!remainingScenarios[i].IsPossible(AllInformation))
+                if (!RemainingScenarios[i].IsPossible(AllInformation))
                 {
-                    remainingScenarios.RemoveAt(i);
+                    RemainingScenarios.RemoveAt(i);
                 }
             }
 

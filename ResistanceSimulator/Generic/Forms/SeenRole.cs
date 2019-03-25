@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using TableTopCalculator.Resistance;
+using TableTopCalculator.Resistance.Forms;
 using TableTopCalculator.SecretHitler;
 
-namespace TableTopCalculator.Generic
+namespace TableTopCalculator.Generic.Forms
 {
     public class SeenRole : Information
     {
@@ -24,41 +20,41 @@ namespace TableTopCalculator.Generic
 
         public override bool IsPossible(Scenario scenario)
         {
-            if (scenario is ResistanceScenario resScen)
+            if (scenario is ResistanceScenario resScenario)
             {
-                if (!resScen.Roles.ContainsKey(Watcher) || !resScen.Roles.ContainsKey(Target))
+                if (!resScenario.Roles.ContainsKey(Watcher) || !resScenario.Roles.ContainsKey(Target))
                     return false;
 
                 if (Claim == ResistanceRole.Red)
                 {
-                    if (resScen.Roles[Watcher] == ResistanceRole.Blue && resScen.Roles[Target] == ResistanceRole.Blue)
+                    if (resScenario.Roles[Watcher] == ResistanceRole.Blue && resScenario.Roles[Target] == ResistanceRole.Blue)
                     {
                         return false;
                     }
                 }
                 else if (Claim == ResistanceRole.Blue)
                 {
-                    if (resScen.Roles[Watcher] == ResistanceRole.Blue && resScen.Roles[Target] == ResistanceRole.Red)
+                    if (resScenario.Roles[Watcher] == ResistanceRole.Blue && resScenario.Roles[Target] == ResistanceRole.Red)
                     {
                         return false;
                     }
                 }
             }
-            else if (scenario is SecretHitlerScenario secScen)
+            else if (scenario is SecretHitlerScenario secScenario)
             {
-                if (!secScen.Roles.ContainsKey(Watcher) || !secScen.Roles.ContainsKey(Target))
+                if (!secScenario.Roles.ContainsKey(Watcher) || !secScenario.Roles.ContainsKey(Target))
                     return false;
 
                 if (Claim == ResistanceRole.Red)
                 {
-                    if (secScen.Roles[Watcher] == SecretHitlerRole.Blue && secScen.Roles[Target] == SecretHitlerRole.Blue)
+                    if (secScenario.Roles[Watcher] == SecretHitlerRole.Blue && secScenario.Roles[Target] == SecretHitlerRole.Blue)
                     {
                         return false;
                     }
                 }
                 else if (Claim == ResistanceRole.Blue)
                 {
-                    if (secScen.Roles[Watcher] == SecretHitlerRole.Blue && (secScen.Roles[Target] == SecretHitlerRole.Red || secScen.Roles[Target] == SecretHitlerRole.Hitler))
+                    if (secScenario.Roles[Watcher] == SecretHitlerRole.Blue && (secScenario.Roles[Target] == SecretHitlerRole.Red || secScenario.Roles[Target] == SecretHitlerRole.Hitler))
                     {
                         return false;
                     }
@@ -73,10 +69,6 @@ namespace TableTopCalculator.Generic
             if (Claim == ResistanceRole.Red)
             {
                 color = Color.Red;
-            }
-            else
-            {
-
             }
 
             using (var pen = new Pen(color, 4))

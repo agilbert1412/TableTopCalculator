@@ -1,4 +1,4 @@
-﻿namespace TableTopCalculator.SecretHitler
+﻿namespace TableTopCalculator.SecretHitler.Forms
 {
     partial class SecretHitlerSimulator
     {

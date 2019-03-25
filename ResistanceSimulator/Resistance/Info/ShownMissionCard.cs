@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
-namespace TableTopCalculator.Resistance
+namespace TableTopCalculator.Resistance.Info
 {
     public class ShownMissionCard : Information
     {
@@ -24,14 +19,10 @@ namespace TableTopCalculator.Resistance
             if (!resistanceScenario.Roles.ContainsKey(Target))
                 return false;
 
-            if (Card == ResistanceRole.Red)
-            {
-                if (resistanceScenario.Roles[Target] == ResistanceRole.Blue)
-                {
-                    return false;
-                }
-            }
-            return true;
+            if (Card != ResistanceRole.Red)
+                return true;
+
+            return resistanceScenario.Roles[Target] != ResistanceRole.Blue;
         }
 
         public override void DrawInfo(Graphics gfx)

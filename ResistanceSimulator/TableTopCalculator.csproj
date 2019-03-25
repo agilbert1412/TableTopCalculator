@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6CD4FCE9-C186-4B7C-BCC0-306FA4659A78}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ResistanceSimulator</RootNamespace>
-    <AssemblyName>ResistanceSimulator</AssemblyName>
+    <RootNamespace>TableTopCalculator</RootNamespace>
+    <AssemblyName>TableTopCalculator</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -57,10 +57,7 @@
     <Compile Include="GameSelector.Designer.cs">
       <DependentUpon>GameSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="Hanabi\HanabiBot.cs" />
-    <Compile Include="Hanabi\HanabiCard.cs" />
-    <Compile Include="Hanabi\HanabiPotentialCard.cs" />
-    <Compile Include="Resistance\Information\SelfIsBlueInfo.cs" />
+    <Compile Include="Resistance\Info\SelfIsBlueInfo.cs" />
     <Compile Include="Resistance\ResistanceCalculator.cs" />
     <Compile Include="Resistance\Forms\MissionCardReveal.cs">
       <SubType>Form</SubType>
@@ -82,7 +79,7 @@
     </Compile>
     <Compile Include="Game.cs" />
     <Compile Include="Information.cs" />
-    <Compile Include="Resistance\Information\Mission.cs" />
+    <Compile Include="Resistance\Info\Mission.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,8 +91,8 @@
     </Compile>
     <Compile Include="Resistance\ResistanceScenario.cs" />
     <Compile Include="Scenario.cs" />
-    <Compile Include="Resistance\Information\ShownMissionCard.cs" />
-    <Compile Include="Resistance\Information\SeenMissionCard.cs" />
+    <Compile Include="Resistance\Info\ShownMissionCard.cs" />
+    <Compile Include="Resistance\Info\SeenMissionCard.cs" />
     <Compile Include="Generic\Forms\SeenRole.cs" />
     <Compile Include="SecretHitler\Forms\PassPolicy.cs">
       <SubType>Form</SubType>
@@ -109,9 +106,9 @@
     <Compile Include="SecretHitler\Forms\SecretHitlerSimulator.Designer.cs">
       <DependentUpon>SecretHitlerSimulator.cs</DependentUpon>
     </Compile>
-    <Compile Include="SecretHitler\Information\SelfIsBlueInfo.cs" />
-    <Compile Include="SecretHitler\Information\NotHitlerInfo.cs" />
-    <Compile Include="SecretHitler\Information\Election.cs" />
+    <Compile Include="SecretHitler\Info\SelfIsBlueInfo.cs" />
+    <Compile Include="SecretHitler\Info\NotHitlerInfo.cs" />
+    <Compile Include="SecretHitler\Info\Election.cs" />
     <Compile Include="SecretHitler\SecretHitlerScenario.cs" />
     <Compile Include="SecretHitler\SecretHitlerCalculator.cs" />
     <EmbeddedResource Include="GameSelector.resx">
@@ -131,6 +128,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Resistance\Forms\ResistanceSimulator.resx">
       <DependentUpon>ResistanceSimulator.cs</DependentUpon>

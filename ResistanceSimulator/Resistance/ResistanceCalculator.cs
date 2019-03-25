@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TableTopCalculator.Resistance.Info;
 
 namespace TableTopCalculator.Resistance
 {
@@ -16,26 +14,26 @@ namespace TableTopCalculator.Resistance
             var oneElemSequences = players.Select(x => new[] { x }).ToList();
 
             scenarios.Add(new ResistanceScenario(players));
-
-            // generate powerset, but skip sequences that are too long
+            
+            // We generate, but skip sequences that are too long
             foreach (var oneElemSequence in oneElemSequences)
             {
-                int length = scenarios.Count;
+                var length = scenarios.Count;
 
-                for (int i = 0; i < length; i++)
+                for (var i = 0; i < length; i++)
                 {
                     if (scenarios[i].NbReds() >= nbRed)
                         continue;
 
-                    var newScen = new ResistanceScenario(players);
+                    var newScenario = new ResistanceScenario(players);
                     foreach (var p in scenarios[i].Roles)
                     {
-                        newScen.Roles[p.Key] = p.Value;
+                        newScenario.Roles[p.Key] = p.Value;
                     }
 
-                    newScen.Roles[oneElemSequence.First()] = ResistanceRole.Red;
+                    newScenario.Roles[oneElemSequence.First()] = ResistanceRole.Red;
 
-                    scenarios.Add(newScen);
+                    scenarios.Add(newScenario);
                 }
             }
 
@@ -46,7 +44,7 @@ namespace TableTopCalculator.Resistance
         {
             var roleToCheck = (ResistanceRole)role;
 
-            var totalScenarios = scenarios.Count();
+            var totalScenarios = scenarios.Count;
             var dicNbHaveRole = new Dictionary<Player, int>();
             var dicChances = new Dictionary<Player, double>();
 
@@ -76,7 +74,7 @@ namespace TableTopCalculator.Resistance
                 }
                 else
                 {
-                    dicChances.Add(kvp.Key, ((double)kvp.Value / (double)totalScenarios));
+                    dicChances.Add(kvp.Key, (kvp.Value / (double)totalScenarios));
                 }
             }
 

@@ -1,4 +1,4 @@
-﻿namespace TableTopCalculator.SecretHitler
+﻿namespace TableTopCalculator.SecretHitler.Forms
 {
     partial class PassPolicy
     {
@@ -120,7 +120,7 @@
             this.cboChanc2.Name = "cboChanc2";
             this.cboChanc2.Size = new System.Drawing.Size(49, 21);
             this.cboChanc2.TabIndex = 14;
-            this.cboChanc2.SelectedIndexChanged += new System.EventHandler(this.cboChanc2_SelectedIndexChanged);
+            this.cboChanc2.SelectedIndexChanged += new System.EventHandler(this.cboChancellor2_SelectedIndexChanged);
             // 
             // cboResult
             // 

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using TableTopCalculator.Resistance.Forms;
 
-namespace TableTopCalculator.Resistance
+namespace TableTopCalculator.Resistance.Info
 {
     public class Mission : Information
     {
@@ -27,20 +27,10 @@ namespace TableTopCalculator.Resistance
                 return false;
 
             var nbPlayersRed = resistanceScenario.Roles.Count(x => Players.Contains(x.Key) && x.Value == ResistanceRole.Red);
-            var nbPlayersBlue = Players.Count() - nbPlayersRed;
 
             var nbCardsRed = Result.Count(x => x == ResistanceRole.Red);
-            var nbCardsBlue = Result.Count(x => x == ResistanceRole.Blue);
 
-            if (nbCardsRed > nbPlayersRed)
-            {
-                return false;
-            }
-            if (nbPlayersRed == MinRedToFail && nbCardsRed < MinRedToFail)
-            {
-                return false;
-            }
-            return true;
+            return nbCardsRed <= nbPlayersRed && (nbPlayersRed != MinRedToFail || nbCardsRed >= MinRedToFail);
         }
 
         public override void DrawInfo(Graphics gfx)

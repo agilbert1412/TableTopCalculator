@@ -1,4 +1,4 @@
-﻿namespace TableTopCalculator.Generic
+﻿namespace TableTopCalculator.Generic.Forms
 {
     partial class RoleReveal
     {

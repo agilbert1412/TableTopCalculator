@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TableTopCalculator.Resistance
 {
@@ -10,7 +7,7 @@ namespace TableTopCalculator.Resistance
     {
         public Dictionary<Player, ResistanceRole> Roles { get; set; }
 
-        public ResistanceScenario(List<Player> players)
+        public ResistanceScenario(IEnumerable<Player> players)
         {
             Roles = new Dictionary<Player, ResistanceRole>();
             foreach(var p in players)
@@ -19,17 +16,17 @@ namespace TableTopCalculator.Resistance
             }
         }
 
-        public override int NbReds()
+        public int NbReds()
         {
             return Roles.Count(x => x.Value == ResistanceRole.Red);
         }
 
-        public override bool IsCredible(Player player)
+        /*public bool IsCredible(Player player)
         {
             if (Roles.ContainsKey(player))
                 return Roles[player] == ResistanceRole.Blue;
             return true;
-        }
+        }*/
 
         public override bool IsPossible(Information info)
         {
@@ -38,10 +35,10 @@ namespace TableTopCalculator.Resistance
 
         public override bool IsPossible(List<Information> allInfos)
         {
-            return allInfos.All(x => IsPossible(x));
+            return allInfos.All(IsPossible);
         }
 
-        public override object GetRedsString()
+        /*public object GetRedsString()
         {
             var str = "";
             foreach(var r in Roles)
@@ -50,6 +47,6 @@ namespace TableTopCalculator.Resistance
                     str += r.Key.Name + " ";
             }
             return str.Trim();
-        }
+        }*/
     }
 }

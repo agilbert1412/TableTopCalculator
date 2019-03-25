@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace TableTopCalculator.Resistance
+namespace TableTopCalculator.Resistance.Forms
 {
     public partial class PlayMission : Form
     {
         public int NbRedPlayed { get; set; }
         public int NbRedToFail { get; set; }
 
-        public PlayMission(List<Player> players)
+        public PlayMission()
         {
             InitializeComponent();
         }

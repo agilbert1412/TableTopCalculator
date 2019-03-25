@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TableTopCalculator.SecretHitler.Info;
 
 namespace TableTopCalculator.SecretHitler
 {
     public class SecretHitlerCalculator : Calculator
     {
-        public const int NB_FASCIST_POLICIES = 11;
-        public const int NB_LIBERAL_POLICIES = 6;
-
         public override List<Scenario> GenerateAllScenarios(List<Player> players, int nbRed)
         {
             var scenarios = new List<SecretHitlerScenario>();
@@ -20,25 +15,25 @@ namespace TableTopCalculator.SecretHitler
 
             scenarios.Add(new SecretHitlerScenario(players));
 
-            // generate powerset, but skip sequences that are too long
+            // generate sequences, but skip sequences that are too long
             foreach (var oneElemSequence in oneElemSequences)
             {
-                int length = scenarios.Count;
+                var length = scenarios.Count;
 
-                for (int i = 0; i < length; i++)
+                for (var i = 0; i < length; i++)
                 {
                     if (scenarios[i].NbReds() >= nbRed)
                         continue;
 
-                    var newScen = new SecretHitlerScenario(players);
+                    var newScenario = new SecretHitlerScenario(players);
                     foreach (var p in scenarios[i].Roles)
                     {
-                        newScen.Roles[p.Key] = p.Value;
+                        newScenario.Roles[p.Key] = p.Value;
                     }
 
-                    newScen.Roles[oneElemSequence.First()] = SecretHitlerRole.Red;
+                    newScenario.Roles[oneElemSequence.First()] = SecretHitlerRole.Red;
 
-                    scenarios.Add(newScen);
+                    scenarios.Add(newScenario);
                 }
             }
 
@@ -46,17 +41,17 @@ namespace TableTopCalculator.SecretHitler
 
             for (var i = scenariosWithReds.Count - 1; i >= 0; i--)
             {
-                var scen = scenariosWithReds[i];
+                var scenario = scenariosWithReds[i];
 
                 for (var j = 0; j < nbRed; j++)
                 {
-                    var newScenRoles = new Dictionary<Player, SecretHitlerRole>();
+                    var newScenarioRoles = new Dictionary<Player, SecretHitlerRole>();
 
                     var idx = 0;
 
-                    foreach(var scenRole in scen.Roles)
+                    foreach(var scenarioRole in scenario.Roles)
                     {
-                        var val = scenRole.Value;
+                        var val = scenarioRole.Value;
                         if (val == SecretHitlerRole.Red)
                         {
                             if (idx == j)
@@ -65,12 +60,12 @@ namespace TableTopCalculator.SecretHitler
                             }
                             idx++;
                         }
-                        newScenRoles.Add(scenRole.Key, val);
+                        newScenarioRoles.Add(scenarioRole.Key, val);
                     }
 
-                    var newScen = new SecretHitlerScenario(newScenRoles);
+                    var newScenario = new SecretHitlerScenario(newScenarioRoles);
 
-                    scenariosWithReds.Add(newScen);
+                    scenariosWithReds.Add(newScenario);
                 }
 
                 scenariosWithReds.RemoveAt(i);
@@ -103,14 +98,14 @@ namespace TableTopCalculator.SecretHitler
                     nbRed--;
             }
 
-            int nbSets = (nbRed + nbBlue) / 3;
-            int remain = (nbRed + nbBlue) % 3;
+            var nbSets = (nbRed + nbBlue) / 3;
+            var remain = (nbRed + nbBlue) % 3;
 
             var allCards = new List<List<SecretHitlerRole>>();
 
-            for (int i = 0; i < nbSets; i++)
+            for (var i = 0; i < nbSets; i++)
             {
-                for(int j = allCards.Count; j >= 0; j--)
+                for(var j = allCards.Count; j >= 0; j--)
                 {
                     var pile1 = new List<SecretHitlerRole>();
                     var pile2 = new List<SecretHitlerRole>();
@@ -163,8 +158,7 @@ namespace TableTopCalculator.SecretHitler
             var oneElemSequences = newCards.Select(x => new[] { x }).ToList();
 
             allSetsOfCards.Add(new List<SecretHitlerRole>(newCards));
-
-            // generate powerset, but skip sequences that are too long
+            
             for (var j = 0; j < oneElemSequences.Count; j++)
             {
                 int length = allSetsOfCards.Count;
@@ -192,16 +186,16 @@ namespace TableTopCalculator.SecretHitler
             {
                 foreach(var set in allCards)
                 {
-                    var newScen = remainingScenarios[i].Clone();
+                    var newScenario = remainingScenarios[i].Clone();
 
-                    while (newScen.CardColorsOrder.Count % 3 != 0)
+                    while (newScenario.CardColorsOrder.Count % 3 != 0)
                     {
-                        newScen.CardColorsOrder.RemoveAt(newScen.CardColorsOrder.Count - 1);
+                        newScenario.CardColorsOrder.RemoveAt(newScenario.CardColorsOrder.Count - 1);
                     }
 
-                    newScen.CardColorsOrder.AddRange(set);
+                    newScenario.CardColorsOrder.AddRange(set);
 
-                    remainingScenarios.Add(newScen);
+                    remainingScenarios.Add(newScenario);
                 }
 
                 remainingScenarios.RemoveAt(i);
@@ -210,16 +204,11 @@ namespace TableTopCalculator.SecretHitler
             return remainingScenarios.Select(x => (Scenario)x).ToList();
         }
 
-        private List<SecretHitlerScenario> GenerateScenarios(Scenario originalSetup, int nbChange, SecretHitlerRole roleChange)
-        {
-            return null;
-        }
-
         public override Dictionary<Player, double> GetChancesOfRole(int role, List<Scenario> scenarios)
         {
             var secretHitlerRole = (SecretHitlerRole)role;
 
-            var totalScenarios = scenarios.Count();
+            var totalScenarios = scenarios.Count;
             var dicNbRed = new Dictionary<Player, int>();
             var dicChances = new Dictionary<Player, double>();
 
@@ -249,7 +238,7 @@ namespace TableTopCalculator.SecretHitler
                 }
                 else
                 {
-                    dicChances.Add(kvp.Key, ((double)kvp.Value / (double)totalScenarios));
+                    dicChances.Add(kvp.Key, (kvp.Value / (double)totalScenarios));
                 }
             }
 

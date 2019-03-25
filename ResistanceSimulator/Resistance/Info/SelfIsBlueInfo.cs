@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 
-namespace TableTopCalculator.Resistance
+namespace TableTopCalculator.Resistance.Info
 {
     public class SelfIsBlueInfo : Information
     {
@@ -18,12 +15,7 @@ namespace TableTopCalculator.Resistance
         {
             var resistanceScenario = (ResistanceScenario)scenario;
 
-            if (resistanceScenario.Roles[Self] != ResistanceRole.Blue)
-            {
-                return false;
-            }
-
-            return true;
+            return resistanceScenario.Roles[Self] == ResistanceRole.Blue;
         }
 
         public override void DrawInfo(Graphics gfx)

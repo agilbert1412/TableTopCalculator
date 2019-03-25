@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TableTopCalculator.SecretHitler
 {
@@ -12,7 +9,7 @@ namespace TableTopCalculator.SecretHitler
 
         public List<SecretHitlerRole> CardColorsOrder { get; set; }
 
-        public SecretHitlerScenario(List<Player> players)
+        public SecretHitlerScenario(IEnumerable<Player> players)
         {
             Roles = new Dictionary<Player, SecretHitlerRole>();
             foreach(var p in players)
@@ -32,7 +29,7 @@ namespace TableTopCalculator.SecretHitler
             CardColorsOrder = new List<SecretHitlerRole>();
         }
 
-        public SecretHitlerScenario(Dictionary<Player, SecretHitlerRole> roles, List<SecretHitlerRole> cardColorsOrder)
+        public SecretHitlerScenario(Dictionary<Player, SecretHitlerRole> roles, IEnumerable<SecretHitlerRole> cardColorsOrder)
         {
             Roles = new Dictionary<Player, SecretHitlerRole>();
             foreach (var p in roles)
@@ -42,7 +39,7 @@ namespace TableTopCalculator.SecretHitler
             CardColorsOrder = new List<SecretHitlerRole>(cardColorsOrder);
         }
 
-        public override int NbReds()
+        public int NbReds()
         {
             return Roles.Count(x => x.Value == SecretHitlerRole.Red || x.Value == SecretHitlerRole.Hitler);
         }
@@ -52,12 +49,12 @@ namespace TableTopCalculator.SecretHitler
             return Roles.Count(x => x.Value == SecretHitlerRole.Hitler);
         }
 
-        public override bool IsCredible(Player player)
+        /*public bool IsCredible(Player player)
         {
             if (Roles.ContainsKey(player))
                 return Roles[player] == SecretHitlerRole.Blue;
             return true;
-        }
+        }*/
 
         public override bool IsPossible(Information info)
         {
@@ -66,10 +63,10 @@ namespace TableTopCalculator.SecretHitler
 
         public override bool IsPossible(List<Information> allInfos)
         {
-            return allInfos.All(x => IsPossible(x));
+            return allInfos.All(IsPossible);
         }
 
-        public override object GetRedsString()
+        /*public object GetRedsString()
         {
             var str = "";
             foreach(var r in Roles)
@@ -78,7 +75,7 @@ namespace TableTopCalculator.SecretHitler
                     str += r.Key.Name + " ";
             }
             return str.Trim();
-        }
+        }*/
 
         public SecretHitlerScenario Clone()
         {

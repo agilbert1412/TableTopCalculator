@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using TableTopCalculator.Resistance.Info;
 
-namespace TableTopCalculator.Resistance
+namespace TableTopCalculator.Resistance.Forms
 {
     public partial class MissionCardReveal : Form
     {
@@ -17,7 +13,7 @@ namespace TableTopCalculator.Resistance
         public int VictimIndex { get; set; }
         public ResistanceRole Claim { get; set; }
 
-        public MissionCardReveal(List<Player> players, List<Mission> missions)
+        public MissionCardReveal(IReadOnlyList<Player> players, IReadOnlyList<Mission> missions)
         {
             InitializeComponent();
 

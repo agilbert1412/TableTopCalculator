@@ -1,37 +1,35 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TableTopCalculator.Generic;
+using Microsoft.VisualBasic;
+using TableTopCalculator.Generic.Forms;
+using TableTopCalculator.Properties;
+using TableTopCalculator.SecretHitler.Info;
 
-namespace TableTopCalculator.SecretHitler
+namespace TableTopCalculator.SecretHitler.Forms
 {
     public partial class SecretHitlerSimulator : Form
     {
-        Game currentGame;
+        private Game _currentGame;
 
-        Player[] CurrentPlayers = new Player[10];
+        private readonly Player[] _currentPlayers = new Player[10];
 
-        List<int> selectedPlayers = new List<int>();
+        private readonly List<int> _selectedPlayers = new List<int>();
 
-        Brush COLOR_CLOSED = Brushes.DimGray;
-        Brush COLOR_OPEN = Brushes.Silver;
+        private readonly Brush _colorClosed = Brushes.DimGray;
+        private readonly Brush _colorOpen = Brushes.Silver;
 
-        Color COLOR_PRESIDENT = Color.Gold;
-        Color COLOR_CHANCELLOR = Color.Brown;
+        private readonly Color _colorPresident = Color.Gold;
+        private readonly Color _colorChancellor = Color.Brown;
 
-        Color COLOR_RED = Color.FromArgb(255, 255, 0, 0);
-        Color COLOR_HITLER = Color.FromArgb(255, 0, 0, 0);
-        Color COLOR_BLUE = Color.FromArgb(255, 0, 128, 255);
+        private readonly Color _colorRed = Color.FromArgb(255, 255, 0, 0);
+        private readonly Color _colorHitler = Color.FromArgb(255, 0, 0, 0);
+        private readonly Color _colorBlue = Color.FromArgb(255, 0, 128, 255);
 
-        int HoveredPlayer = -1;
+        private int _hoveredPlayer = -1;
 
         public SecretHitlerSimulator()
         {
@@ -40,10 +38,10 @@ namespace TableTopCalculator.SecretHitler
 
         private void SecretHitlerSimulator_Load(object sender, EventArgs e)
         {
-            currentGame = null;
-            for (int i = 0; i < 9; i++)
+            _currentGame = null;
+            for (var i = 0; i < 9; i++)
             {
-                CurrentPlayers[i] = null;
+                _currentPlayers[i] = null;
             }
 
             btnStartStop.Enabled = false;
@@ -61,13 +59,13 @@ namespace TableTopCalculator.SecretHitler
             {
                 DrawPlayer(gfx, i);
             }
-            if (currentGame != null)
+
+            if (_currentGame == null)
+                return;
+
+            foreach (var info in _currentGame.AllInformation)
             {
-                for (var i = 0; i < currentGame.AllInformation.Count; i++)
-                {
-                    var info = currentGame.AllInformation[i];
-                    info.DrawInfo(gfx);
-                }
+                info.DrawInfo(gfx);
             }
         }
 
@@ -82,46 +80,46 @@ namespace TableTopCalculator.SecretHitler
             var locationPercent = new Point(square.X + 10, square.Y + 10);
             var font = new Font(DefaultFont.FontFamily, 10, FontStyle.Bold);
 
-            if (CurrentPlayers[playerIndex] != null)
+            if (_currentPlayers[playerIndex] != null)
             {
-                if (currentGame != null)
+                if (_currentGame != null)
                 {
-                    var chanceOfRed = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Red);
-                    var chanceOfHitler = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Hitler);
+                    var chanceOfRed = _currentGame.GetChanceOfRole(_currentPlayers[playerIndex], (int)SecretHitlerRole.Red);
+                    var chanceOfHitler = _currentGame.GetChanceOfRole(_currentPlayers[playerIndex], (int)SecretHitlerRole.Hitler);
 
-                    if (MouseButtons == MouseButtons.Right && HoveredPlayer > -1 && CurrentPlayers[HoveredPlayer] != null)
+                    if (MouseButtons == MouseButtons.Right && _hoveredPlayer > -1 && _currentPlayers[_hoveredPlayer] != null)
                     {
-                        chanceOfRed = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Red, CurrentPlayers[HoveredPlayer]);
-                        chanceOfHitler = currentGame.GetChanceOfRole(CurrentPlayers[playerIndex], (int)SecretHitlerRole.Hitler, CurrentPlayers[HoveredPlayer]);
+                        chanceOfRed = _currentGame.GetChanceOfRole(_currentPlayers[playerIndex], (int)SecretHitlerRole.Red, _currentPlayers[_hoveredPlayer]);
+                        chanceOfHitler = _currentGame.GetChanceOfRole(_currentPlayers[playerIndex], (int)SecretHitlerRole.Hitler, _currentPlayers[_hoveredPlayer]);
                     }
 
-                    var colorRed = GetPlayerColor(chanceOfRed, COLOR_BLUE, COLOR_RED);
-                    var colorHitler = GetPlayerColor(chanceOfHitler, colorRed, COLOR_HITLER);
+                    var colorRed = GetPlayerColor(chanceOfRed, _colorBlue, _colorRed);
+                    var colorHitler = GetPlayerColor(chanceOfHitler, colorRed, _colorHitler);
                     gfx.FillRectangle(new SolidBrush(colorRed), square);
                     gfx.DrawPath(new Pen(colorHitler), GetHitlerLogo(square));
                     gfx.DrawString(Math.Round(chanceOfRed * 100) + "% (" + Math.Round(chanceOfHitler * 100) + "%", font, Brushes.Black, locationPercent);
                 }
                 else
                 {
-                    gfx.FillRectangle(new SolidBrush(GetPlayerColor(0, COLOR_BLUE, COLOR_RED)), square);
+                    gfx.FillRectangle(new SolidBrush(GetPlayerColor(0, _colorBlue, _colorRed)), square);
                 }
-                gfx.DrawString(CurrentPlayers[playerIndex].Name, font, Brushes.Black, locationName);
-                if (selectedPlayers.Contains(playerIndex))
+                gfx.DrawString(_currentPlayers[playerIndex].Name, font, Brushes.Black, locationName);
+                if (_selectedPlayers.Contains(playerIndex))
                 {
-                    gfx.DrawRectangle(new Pen((selectedPlayers[0] == playerIndex ? COLOR_PRESIDENT : COLOR_CHANCELLOR), 4), square);
+                    gfx.DrawRectangle(new Pen((_selectedPlayers[0] == playerIndex ? _colorPresident : _colorChancellor), 4), square);
                 }
             }
             else
             {
-                if (currentGame != null)
+                if (_currentGame != null)
                 {
-                    gfx.FillRectangle(COLOR_CLOSED, square);
+                    gfx.FillRectangle(_colorClosed, square);
                     gfx.DrawString("Closed", font, Brushes.Black, locationName);
                 }
                 else
                 {
 
-                    gfx.FillRectangle(COLOR_OPEN, square);
+                    gfx.FillRectangle(_colorOpen, square);
                     gfx.DrawString("Open", font, Brushes.Black, locationName);
                 }
             }
@@ -150,11 +148,11 @@ namespace TableTopCalculator.SecretHitler
 
         internal static Rectangle GetPlayerSquare(int index)
         {
+            const int length = 100;
+
             var xOffset = ((index % 5) * 150) + 50;
             var yOffset = ((index / 5) * 150) + 50;
-
-            var length = 100;
-
+            
             return new Rectangle(xOffset, yOffset, length, length);
         }
 
@@ -166,42 +164,43 @@ namespace TableTopCalculator.SecretHitler
                 for (var i = 0; i < 10; i++)
                 {
                     var square = GetPlayerSquare(i);
-                    if (square.Contains(e.X, e.Y))
-                    {
-                        clickedPlayer = i;
-                        break;
-                    }
+
+                    if (!square.Contains(e.X, e.Y))
+                        continue;
+
+                    clickedPlayer = i;
+                    break;
                 }
 
                 if (clickedPlayer > -1)
                 {
-                    if (currentGame == null)
+                    if (_currentGame == null)
                     {
-                        if (CurrentPlayers[clickedPlayer] == null)
+                        if (_currentPlayers[clickedPlayer] == null)
                         {
                             // Show New Player Form
 
-                            var name = Interaction.InputBox("What is the name of this player?", "Name Player", "");
+                            var name = Interaction.InputBox("What is the name of this player?", "Name Player");
 
-                            CurrentPlayers[clickedPlayer] = new Player(clickedPlayer, name);
+                            _currentPlayers[clickedPlayer] = new Player(clickedPlayer, name);
                         }
                         else
                         {
-                            CurrentPlayers[clickedPlayer] = null;
+                            _currentPlayers[clickedPlayer] = null;
                         }
-                        btnStartStop.Enabled = CurrentPlayers.Count(x => x != null) > 4;
+                        btnStartStop.Enabled = _currentPlayers.Count(x => x != null) > 4;
                     }
                     else
                     {
-                        if (CurrentPlayers[clickedPlayer] != null)
+                        if (_currentPlayers[clickedPlayer] != null)
                         {
-                            if (selectedPlayers.Contains(clickedPlayer))
+                            if (_selectedPlayers.Contains(clickedPlayer))
                             {
-                                selectedPlayers.Remove(clickedPlayer);
+                                _selectedPlayers.Remove(clickedPlayer);
                             }
-                            else if (selectedPlayers.Count < 2)
+                            else if (_selectedPlayers.Count < 2)
                             {
-                                selectedPlayers.Add(clickedPlayer);
+                                _selectedPlayers.Add(clickedPlayer);
                             }
                         }
                         btnStartStop.Enabled = true;
@@ -213,11 +212,11 @@ namespace TableTopCalculator.SecretHitler
 
         private void btnStartStop_Click(object sender, EventArgs e)
         {
-            if (currentGame != null)
+            if (_currentGame != null)
             {
-                currentGame = null;
+                _currentGame = null;
 
-                btnStartStop.Text = "Start Game";
+                btnStartStop.Text = Resources.Start_Game;
                 btnElectionPassed.Enabled = false;
                 btnAllegianceReveal.Enabled = false;
 
@@ -225,10 +224,10 @@ namespace TableTopCalculator.SecretHitler
             }
             else
             {
-                currentGame = new Game(CurrentPlayers.ToList(), GameType.SecretHitler);
-                currentGame.StartGame();
+                _currentGame = new Game(_currentPlayers.ToList(), GameType.SecretHitler);
+                _currentGame.StartGame();
 
-                btnStartStop.Text = "Stop Game";
+                btnStartStop.Text = Resources.Stop_Game;
                 btnElectionPassed.Enabled = true;
                 btnAllegianceReveal.Enabled = true;
 
@@ -239,62 +238,64 @@ namespace TableTopCalculator.SecretHitler
 
         private void btnPlayMission_Click(object sender, EventArgs e)
         {
-            if (selectedPlayers.Count != 2)
+            if (_selectedPlayers.Count != 2)
                 return;
 
-            if (currentGame.remainingScenarios.Any(x => ((SecretHitlerScenario)(x)).CardColorsOrder.Count < (currentGame.AllInformation.Count(y => y is Election) * 3) + 3))
+            if (_currentGame.RemainingScenarios.Any(x => ((SecretHitlerScenario)(x)).CardColorsOrder.Count < (_currentGame.AllInformation.Count(y => y is Election) * 3) + 3))
             {
-                currentGame.remainingScenarios = SecretHitlerCalculator.GenerateNextCards(currentGame.remainingScenarios, currentGame.AllInformation);
+                _currentGame.RemainingScenarios = SecretHitlerCalculator.GenerateNextCards(_currentGame.RemainingScenarios, _currentGame.AllInformation);
             }
 
-            var president = CurrentPlayers[selectedPlayers[0]];
-            var chancellor = CurrentPlayers[selectedPlayers[1]];
+            var president = _currentPlayers[_selectedPlayers[0]];
+            var chancellor = _currentPlayers[_selectedPlayers[1]];
 
             var frmMission = new PassPolicy(president, chancellor);
-            if (frmMission.ShowDialog() == DialogResult.OK)
-            {
-                var missionInfo = new Election(currentGame.AllInformation.Count(x => x is Election), frmMission.President, frmMission.Chancellor,
-                    frmMission.Result, currentGame.AllInformation.Count(x => x is Election elec && elec.Result == SecretHitlerRole.Red) >= 3);
+
+            if (frmMission.ShowDialog() != DialogResult.OK)
+                return;
+
+            var missionInfo = new Election(_currentGame.AllInformation.Count(x => x is Election), frmMission.President, frmMission.Chancellor,
+                frmMission.Result, _currentGame.AllInformation.Count(x => x is Election election && election.Result == SecretHitlerRole.Red) >= 3);
 
 
 
-                currentGame.NewInformation(missionInfo);
+            _currentGame.NewInformation(missionInfo);
 
-                selectedPlayers.Clear();
-                Refresh();
-            }
+            _selectedPlayers.Clear();
+            Refresh();
         }
 
         private void btnRoleReveal_Click(object sender, EventArgs e)
         {
             var playersInGame = new List<Player>();
             //currentGame.AllInformation.RemoveAt(currentGame.AllInformation.Count - 1);
-            playersInGame.AddRange(CurrentPlayers.Where(x => x != null));
+            playersInGame.AddRange(_currentPlayers.Where(x => x != null));
 
             var frmSeenRole = new RoleReveal(playersInGame);
-            if (frmSeenRole.ShowDialog() == DialogResult.OK)
-            {
-                var missionInfo = new SeenRole(playersInGame[frmSeenRole.WatcherIndex], playersInGame[frmSeenRole.VictimIndex], frmSeenRole.Claim);
-                currentGame.NewInformation(missionInfo);
 
-                selectedPlayers.Clear();
-                Refresh();
-            }
+            if (frmSeenRole.ShowDialog() != DialogResult.OK)
+                return;
+
+            var missionInfo = new SeenRole(playersInGame[frmSeenRole.WatcherIndex], playersInGame[frmSeenRole.VictimIndex], frmSeenRole.Claim);
+            _currentGame.NewInformation(missionInfo);
+
+            _selectedPlayers.Clear();
+            Refresh();
         }
 
         private void btnNotHitler_Click(object sender, EventArgs e)
         {
-            if (selectedPlayers.Count != 1)
+            if (_selectedPlayers.Count != 1)
                 return;
 
 
-            currentGame.NewInformation(new NotHitlerInfo(CurrentPlayers[selectedPlayers[0]]));
+            _currentGame.NewInformation(new NotHitlerInfo(_currentPlayers[_selectedPlayers[0]]));
 
-            selectedPlayers.Clear();
+            _selectedPlayers.Clear();
             Refresh();
         }
 
-        private Color GetPlayerColor(double chanceRed, Color colorIfNot, Color colorIfYes)
+        private static Color GetPlayerColor(double chanceRed, Color colorIfNot, Color colorIfYes)
         {
             var chanceBlue = 1 - chanceRed;
 
@@ -308,28 +309,29 @@ namespace TableTopCalculator.SecretHitler
 
         private void SecretHitlerSimulator_MouseMove(object sender, MouseEventArgs e)
         {
-            HoveredPlayer = -1;
+            _hoveredPlayer = -1;
             for (var i = 0; i < 10; i++)
             {
                 var square = GetPlayerSquare(i);
-                if (square.Contains(e.X, e.Y))
-                {
-                    HoveredPlayer = i;
-                    break;
-                }
+
+                if (!square.Contains(e.X, e.Y))
+                    continue;
+
+                _hoveredPlayer = i;
+                break;
             }
-            this.Refresh();
+            Refresh();
         }
 
         private void SecretHitlerSimulator_MouseDown(object sender, MouseEventArgs e)
         {
-            this.Refresh();
+            Refresh();
         }
 
         private void SecretHitlerSimulator_MouseUp(object sender, MouseEventArgs e)
         {
 
-            this.Refresh();
+            Refresh();
         }
     }
 }

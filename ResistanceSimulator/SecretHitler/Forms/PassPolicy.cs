@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace TableTopCalculator.SecretHitler
+namespace TableTopCalculator.SecretHitler.Forms
 {
     public partial class PassPolicy : Form
     {
@@ -67,7 +62,7 @@ namespace TableTopCalculator.SecretHitler
             cboChanc2.SelectedIndex = cboPres3.SelectedIndex;
         }
 
-        private void cboChanc2_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboChancellor2_SelectedIndexChanged(object sender, EventArgs e)
         {
             cboResult.SelectedIndex = cboChanc2.SelectedIndex;
         }

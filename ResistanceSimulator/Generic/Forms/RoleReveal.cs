@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace TableTopCalculator.Generic
+namespace TableTopCalculator.Generic.Forms
 {
     public partial class RoleReveal : Form
     {
@@ -16,7 +10,7 @@ namespace TableTopCalculator.Generic
         public int VictimIndex { get; set; }
         public ResistanceRole Claim { get; set; }
 
-        public RoleReveal(List<Player> players)
+        public RoleReveal(IReadOnlyList<Player> players)
         {
             InitializeComponent();
 

@@ -1,4 +1,4 @@
-﻿namespace TableTopCalculator.Resistance
+﻿namespace TableTopCalculator.Resistance.Forms
 {
     partial class MissionCardReveal
     {

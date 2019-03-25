@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace TableTopCalculator.Hanabi
 {
     public class HanabiCard
     {
-        public int Number { get; set; }
-        public Color Color { get; set; }
+        public int Number { get; }
+        public Color Color { get; }
 
         public HanabiCard(int number, Color color)
         {
@@ -18,7 +13,7 @@ namespace TableTopCalculator.Hanabi
             Color = color;
         }
 
-        public virtual bool IsTouched(int numberClue)
+        /*public virtual bool IsTouched(int numberClue)
         {
             return Number == numberClue;
         }
@@ -26,7 +21,7 @@ namespace TableTopCalculator.Hanabi
         public virtual bool IsTouched(Color colorClue)
         {
             return Color == colorClue;
-        }
+        }*/
 
         public virtual HanabiCard Clone()
         {
@@ -42,6 +37,17 @@ namespace TableTopCalculator.Hanabi
                 return Number == otherCard.Number && Color == otherCard.Color;
             }
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hash = 13;
+                hash = (hash * 17) + Number;
+                hash = (hash * 17) + Color.GetHashCode();
+                return hash;
+            }
         }
     }
 }

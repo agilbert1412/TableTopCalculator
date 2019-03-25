@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace TableTopCalculator.SecretHitler
+namespace TableTopCalculator.SecretHitler.Info
 {
     public class Election : Information
     {
@@ -40,47 +39,44 @@ namespace TableTopCalculator.SecretHitler
             }
 
             var cardsMission = hitlerScenario.CardColorsOrder.GetRange(NbElection * 3, 3);
-            var nbBlueScen = cardsMission.Count(x => x == SecretHitlerRole.Blue);
-            var nbRedScen = cardsMission.Count(x => x == SecretHitlerRole.Red);
+            var nbBlueScenario = cardsMission.Count(x => x == SecretHitlerRole.Blue);
+            var nbRedScenarios = cardsMission.Count(x => x == SecretHitlerRole.Red);
 
-            if (Result == SecretHitlerRole.Blue && nbBlueScen < 1)
+            if (Result == SecretHitlerRole.Blue && nbBlueScenario < 1)
                 return false;
-            if (Result == SecretHitlerRole.Red && nbRedScen < 1)
+            if (Result == SecretHitlerRole.Red && nbRedScenarios < 1)
                 return false;
+
+            var nbBlueSeen = President.Value.Count(x => x == SecretHitlerRole.Blue);
+            var nbRedSeen = President.Value.Count(x => x == SecretHitlerRole.Red);
 
             if (hitlerScenario.Roles[President.Key] == SecretHitlerRole.Blue)
             {
-                var nbBlueSeen = President.Value.Count(x => x == SecretHitlerRole.Blue);
-                var nbRedSeen = President.Value.Count(x => x == SecretHitlerRole.Red);
-
-                if (nbBlueScen != nbBlueSeen || nbRedScen != nbRedSeen)
+                if (nbBlueScenario != nbBlueSeen || nbRedScenarios != nbRedSeen)
                     return false;
 
-                nbBlueScen -= President.Value.First() == SecretHitlerRole.Blue ? 1 : 0;
-                nbRedScen -= President.Value.First() == SecretHitlerRole.Red ? 1 : 0;
+                nbBlueScenario -= President.Value.First() == SecretHitlerRole.Blue ? 1 : 0;
+                nbRedScenarios -= President.Value.First() == SecretHitlerRole.Red ? 1 : 0;
             }
 
-            if (hitlerScenario.Roles[Chancellor.Key] == SecretHitlerRole.Blue)
+            if (hitlerScenario.Roles[Chancellor.Key] != SecretHitlerRole.Blue)
+                return true;
+            
+            nbBlueSeen = Chancellor.Value.Count(x => x == SecretHitlerRole.Blue);
+            nbRedSeen = Chancellor.Value.Count(x => x == SecretHitlerRole.Red);
+
+            if (hitlerScenario.Roles[President.Key] == SecretHitlerRole.Blue)
             {
-                var nbBlueSeen = Chancellor.Value.Count(x => x == SecretHitlerRole.Blue);
-                var nbRedSeen = Chancellor.Value.Count(x => x == SecretHitlerRole.Red);
-
-                if (hitlerScenario.Roles[President.Key] == SecretHitlerRole.Blue)
+                if (nbBlueScenario != nbBlueSeen || nbRedScenarios != nbRedSeen)
                 {
-                    if (nbBlueScen != nbBlueSeen || nbRedScen != nbRedSeen)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
-
-                if (nbBlueSeen > nbBlueScen || nbRedSeen > nbRedScen)
-                    return false;
-
-                if (nbBlueSeen > 0 && Result != SecretHitlerRole.Blue)
-                    return false;
             }
 
-            return true;
+            if (nbBlueSeen > nbBlueScenario || nbRedSeen > nbRedScenarios)
+                return false;
+
+            return nbBlueSeen <= 0 || Result == SecretHitlerRole.Blue;
         }
 
         public override void DrawInfo(Graphics gfx)
